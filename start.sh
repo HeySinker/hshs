@@ -1,1 +1,1 @@
-python3 telegram.py
+python telegram.py
