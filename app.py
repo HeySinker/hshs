@@ -1,6 +1,12 @@
 # requirements:
 # pip install python-telegram-bot==13.15 requests
 
+import sys
+import types
+
+# Patch لموديول imghdr غير موجود في Python 3.13
+sys.modules['imghdr'] = types.ModuleType('imghdr')
+
 import os
 import base64
 import json
@@ -10,13 +16,12 @@ from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # ---------- Configuration (put secrets in env vars) ----------
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-GITHUB_TOKEN   = os.environ.get("BITHUB_TOKEN")
+GITHUB_TOKEN   = os.environ.get("BITHUB_TOKEN")  # كما هو
 GITHUB_OWNER   = "HeySinker"
 GITHUB_REPO    = "fsfs"
-FILE_PATH      = "config.json"   # path inside repo
-BRANCH         = "main"          # optional, change if needed
+FILE_PATH      = "config.json"
+BRANCH         = "main"
 
-# The list of possible pass values that the bot can choose from:
 PASS_LIST = [
     "NX",
     "NX2",
@@ -38,7 +43,7 @@ def get_file_from_github():
     params = {"ref": BRANCH}
     r = requests.get(GITHUB_API_BASE, headers=HEADERS, params=params)
     r.raise_for_status()
-    return r.json()  # contains 'content' (base64), 'sha', etc.
+    return r.json()
 
 def update_file_on_github(new_content_bytes, sha, commit_message):
     content_b64 = base64.b64encode(new_content_bytes).decode("utf-8")
@@ -59,11 +64,9 @@ def set_pass_in_json(target_pass_value):
     raw = base64.b64decode(content_b64)
     config = json.loads(raw)
 
-    # Find the pool we want to edit (match by coin+url for safety)
     modified = False
     for pool in config.get("pools", []):
         if pool.get("coin") == "XMR" and pool.get("url") == "pool.supportxmr.com:443":
-            old = pool.get("pass")
             pool["pass"] = target_pass_value
             modified = True
             break
@@ -73,8 +76,7 @@ def set_pass_in_json(target_pass_value):
 
     new_raw = json.dumps(config, indent=2).encode("utf-8")
     commit_msg = f"Telegram-bot: update pool pass -> {target_pass_value}"
-    res = update_file_on_github(new_raw, sha, commit_msg)
-    return res
+    return update_file_on_github(new_raw, sha, commit_msg)
 
 # ---------- Telegram command handlers ----------
 def start(update: Update, context: CallbackContext):
@@ -91,7 +93,7 @@ def setpass_cmd(update: Update, context: CallbackContext):
     try:
         idx = int(context.args[0])
         value = PASS_LIST[idx]
-    except Exception as e:
+    except Exception:
         update.message.reply_text("فهرس غير صالح. استخدم /listpasses لمشاهدة الفهارس.")
         return
 
@@ -106,7 +108,7 @@ def setpass_cmd(update: Update, context: CallbackContext):
 # ---------- Main ----------
 def main():
     if not TELEGRAM_TOKEN or not GITHUB_TOKEN:
-        raise SystemExit("تأكد من وجود TELEGRAM_TOKEN و GITHUB_TOKEN في متغيرات البيئة.")
+        raise SystemExit("تأكد من وجود TELEGRAM_TOKEN وBITHUB_TOKEN في متغيرات البيئة.")
     updater = Updater(TELEGRAM_TOKEN, use_context=True)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler("start", start))
