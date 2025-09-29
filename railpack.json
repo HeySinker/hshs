@@ -1,4 +1,4 @@
 {
   "language": "python",
-  "start": "python telegram.py"
+  "start": "python app.py"
 }
