@@ -7,8 +7,8 @@ from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # -------------------- التكوين --------------------
 # يمكنك وضع القيم هنا مباشرة لو تحب، لكن أفضل عبر env vars:
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN") or "<8366143899:AAEqMzlFhaxP3bJ-tVudeDwugIHGqkhnKtw>"
-GITHUB_TOKEN   = os.environ.get("GITHUB_TOKEN")   or "<SHA256:h+L7wPhLnxFY2NjpA3pTv1N4yawM8G6W6dGH1OY6U5Y>"
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN") or "<PUT_YOUR_TELEGRAM_TOKEN_HERE>"
+GITHUB_TOKEN   = os.environ.get("BITHUB_TOKEN")   or "<PUT_YOUR_TELEGRAM_TOKEN_HERE>"
 
 GITHUB_OWNER = "HeySinker"
 GITHUB_REPO  = "fsfs"
