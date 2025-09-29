@@ -1,5 +1,5 @@
 {
   "language": "python",
- "python_version": "3.11"
+ "python_version": "3.11",
  "start": "python app.py"
 }
